@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Builder - Pikxx</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f8f9fa;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            transition: opacity 0.3s;
+        }
+
+        .nav-links a:hover {
+            opacity: 0.8;
+        }
+
+        .main-container {
+            margin-top: 80px;
+            padding: 2rem;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .form-header {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .form-title {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .form-description {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .builder-toolbar {
+            background: white;
+            padding: 1rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .add-question-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        .add-question-btn:hover {
+            background: #5a6fd8;
+        }
+
+        .question-type-select {
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: white;
+        }
+
+        .form-preview {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 2rem;
+        }
+
+        .question-container {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            background: white;
+            position: relative;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .question-number {
+            background: #667eea;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .question-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 3px;
+            transition: background 0.3s;
+        }
+
+        .action-btn:hover {
+            background: #f0f0f0;
+        }
+
+        .question-input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .question-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .options-container {
+            margin-top: 1rem;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .option-input {
+            flex: 1;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+
+        .remove-option {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 0.3rem 0.6rem;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .add-option {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-top: 0.5rem;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            justify-content: center;
+        }
+
+        .save-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        .preview-btn {
+            background: #17a2b8;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        .share-btn {
+            background: #ffc107;
+            color: #333;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        .drag-handle {
+            cursor: move;
+            color: #999;
+            margin-right: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .builder-toolbar {
+                flex-direction: column;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <div class="logo">Pikxx</div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="form-builder.html">Form Builder</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="main-container">
+        <div class="form-header">
+            <input type="text" class="question-input" placeholder="Untitled form" style="font-size: 2rem; border: none; background: transparent; font-weight: bold;">
+            <input type="text" class="question-input" placeholder="Form description" style="border: none; background: transparent; color: #666;">
+        </div>
+
+        <div class="builder-toolbar">
+            <button class="add-question-btn" onclick="addQuestion()">+ Add Question</button>
+            <select class="question-type-select" id="questionType">
+                <option value="short-text">Short Answer</option>
+                <option value="long-text">Paragraph</option>
+                <option value="multiple-choice">Multiple Choice</option>
+                <option value="checkbox">Checkboxes</option>
+                <option value="dropdown">Dropdown</option>
+                <option value="linear-scale">Linear Scale</option>
+                <option value="date">Date</option>
+                <option value="time">Time</option>
+            </select>
+        </div>
+
+        <div class="form-preview" id="formPreview">
+            <div class="question-container" id="question1">
+                <div class="question-header">
+                    <div style="display: flex; align-items: center;">
+                        <span class="drag-handle">⋮⋮</span>
+                        <div class="question-number">1</div>
+                    </div>
+                    <div class="question-actions">
+                        <button class="action-btn" onclick="duplicateQuestion(this)">📋</button>
+                        <button class="action-btn" onclick="deleteQuestion(this)">🗑️</button>
+                    </div>
+                </div>
+                <input type="text" class="question-input" placeholder="Question 1" value="What is your name?">
+                <div class="options-container">
+                    <div class="option-item">
+                        <input type="radio" disabled>
+                        <input type="text" class="option-input" placeholder="Option 1" value="Option 1">
+                        <button class="remove-option" onclick="removeOption(this)">×</button>
+                    </div>
+                    <div class="option-item">
+                        <input type="radio" disabled>
+                        <input type="text" class="option-input" placeholder="Option 2" value="Option 2">
+                        <button class="remove-option" onclick="removeOption(this)">×</button>
+                    </div>
+                </div>
+                <button class="add-option" onclick="addOption(this)">+ Add Option</button>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button class="save-btn" onclick="saveForm()">Save Form</button>
+            <button class="preview-btn" onclick="previewForm()">Preview</button>
+            <button class="share-btn" onclick="shareForm()">Share</button>
+        </div>
+    </div>
+
+    <script>
+        let questionCounter = 1;
+
+        function addQuestion() {
+            questionCounter++;
+            const questionType = document.getElementById('questionType').value;
+            const questionContainer = document.createElement('div');
+            questionContainer.className = 'question-container';
+            questionContainer.id = 'question' + questionCounter;
+
+            let questionHTML = `
+                <div class="question-header">
+                    <div style="display: flex; align-items: center;">
+                        <span class="drag-handle">⋮⋮</span>
+                        <div class="question-number">${questionCounter}</div>
+                    </div>
+                    <div class="question-actions">
+                        <button class="action-btn" onclick="duplicateQuestion(this)">📋</button>
+                        <button class="action-btn" onclick="deleteQuestion(this)">🗑️</button>
+                    </div>
+                </div>
+                <input type="text" class="question-input" placeholder="Question ${questionCounter}">
+            `;
+
+            if (questionType === 'multiple-choice' || questionType === 'checkbox' || questionType === 'dropdown') {
+                questionHTML += `
+                    <div class="options-container">
+                        <div class="option-item">
+                            <input type="${questionType === 'checkbox' ? 'checkbox' : 'radio'}" disabled>
+                            <input type="text" class="option-input" placeholder="Option 1" value="Option 1">
+                            <button class="remove-option" onclick="removeOption(this)">×</button>
+                        </div>
+                        <div class="option-item">
+                            <input type="${questionType === 'checkbox' ? 'checkbox' : 'radio'}" disabled>
+                            <input type="text" class="option-input" placeholder="Option 2" value="Option 2">
+                            <button class="remove-option" onclick="removeOption(this)">×</button>
+                        </div>
+                    </div>
+                    <button class="add-option" onclick="addOption(this)">+ Add Option</button>
+                `;
+            } else if (questionType === 'linear-scale') {
+                questionHTML += `
+                    <div style="margin-top: 1rem;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <span>1</span>
+                            <span>2</span>
+                            <span>3</span>
+                            <span>4</span>
+                            <span>5</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <input type="radio" disabled>
+                            <input type="radio" disabled>
+                            <input type="radio" disabled>
+                            <input type="radio" disabled>
+                            <input type="radio" disabled>
+                        </div>
+                    </div>
+                `;
+            }
+
+            questionContainer.innerHTML = questionHTML;
+            document.getElementById('formPreview').appendChild(questionContainer);
+        }
+
+        function duplicateQuestion(button) {
+            const questionContainer = button.closest('.question-container');
+            const clonedQuestion = questionContainer.cloneNode(true);
+            questionCounter++;
+            clonedQuestion.id = 'question' + questionCounter;
+            clonedQuestion.querySelector('.question-number').textContent = questionCounter;
+            clonedQuestion.querySelector('.question-input').value = '';
+            document.getElementById('formPreview').appendChild(clonedQuestion);
+        }
+
+        function deleteQuestion(button) {
+            const questionContainer = button.closest('.question-container');
+            if (document.querySelectorAll('.question-container').length > 1) {
+                questionContainer.remove();
+                updateQuestionNumbers();
+            }
+        }
+
+        function updateQuestionNumbers() {
+            const questions = document.querySelectorAll('.question-container');
+            questions.forEach((question, index) => {
+                question.querySelector('.question-number').textContent = index + 1;
+            });
+        }
+
+        function addOption(button) {
+            const optionsContainer = button.previousElementSibling;
+            const optionItem = document.createElement('div');
+            optionItem.className = 'option-item';
+            optionItem.innerHTML = `
+                <input type="radio" disabled>
+                <input type="text" class="option-input" placeholder="Option">
+                <button class="remove-option" onclick="removeOption(this)">×</button>
+            `;
+            optionsContainer.appendChild(optionItem);
+        }
+
+        function removeOption(button) {
+            const optionItem = button.closest('.option-item');
+            if (optionItem.parentElement.children.length > 1) {
+                optionItem.remove();
+            }
+        }
+
+        function saveForm() {
+            const formData = {
+                title: document.querySelector('.form-header .question-input').value || 'Untitled Form',
+                description: document.querySelectorAll('.form-header .question-input')[1].value || '',
+                questions: []
+            };
+
+            document.querySelectorAll('.question-container').forEach((container, index) => {
+                const question = {
+                    number: index + 1,
+                    text: container.querySelector('.question-input').value,
+                    type: 'multiple-choice', // Default for now
+                    options: []
+                };
+
+                const options = container.querySelectorAll('.option-input');
+                options.forEach(option => {
+                    question.options.push(option.value);
+                });
+
+                formData.questions.push(question);
+            });
+
+            localStorage.setItem('savedForm', JSON.stringify(formData));
+            alert('Form saved successfully!');
+        }
+
+        function previewForm() {
+            // Create a preview window or modal
+            const formData = JSON.parse(localStorage.getItem('savedForm') || '{}');
+            if (formData.title) {
+                alert('Preview: ' + formData.title + '\nQuestions: ' + formData.questions.length);
+            } else {
+                alert('Please save the form first to preview.');
+            }
+        }
+
+        function shareForm() {
+            const formData = JSON.parse(localStorage.getItem('savedForm') || '{}');
+            if (formData.title) {
+                // In a real app, this would generate a shareable link
+                alert('Share link generated: https://pikxx.com/forms/' + Date.now());
+            } else {
+                alert('Please save the form first to share.');
+            }
+        }
+    </script>
+</body>
+</html> 
